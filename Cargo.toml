@@ -1,25 +1,27 @@
 [package]
-name = "rucrf"
-version = "0.3.3"
-edition = "2021"
-rust-version = "1.85"
-authors = ["Koichi Akabe <vbkaisetsu@gmail.com>"]
-description = "Conditional Random Fields implemented in pure Rust"
+name = "rucrf-rkyv"
+version = "0.3.3-rkyv.1"
+edition = "2024"
+rust-version = "1.90"
+authors = [
+    "stellanomia <fulmlumo@gmail.com>",
+    "Koichi Akabe <vbkaisetsu@gmail.com>",
+]
+description = "Conditional Random Fields implemented in pure Rust, with rkyv support"
 license = "MIT OR Apache-2.0"
-homepage = "https://github.com/daac-tools/rucrf"
-repository = "https://github.com/daac-tools/rucrf"
+homepage = "https://github.com/stellanomia/rucrf-rkyv"
+repository = "https://github.com/stellanomia/rucrf-rkyv"
 readme = "README.md"
 keywords = ["crf"]
-categories = ["science", "algorithms", "no-std"]
+categories = ["science", "algorithms"]
 
 [dependencies]
-bincode = { version = "2.0.1", features = ["derive"] } # MIT
-hashbrown = "0.15" # MIT or Apache-2.0
-
-argmin = { version = "0.10.0", optional = true } # MIT or Apache-2.0
-argmin-math = { version = "0.4.0", optional = true } # MIT or Apache-2.0
-argmin-observer-slog = { version = "0.1.0", optional = true } # MIT or Apache-2.0
-crossbeam-channel = { version = "0.5.14", optional = true } # MIT or Apache-2.0
+hashbrown = "0.15.5" # MIT or Apache-2.0
+argmin = { version = "0.11.0", optional = true } # MIT or Apache-2.0
+argmin-math = { version = "0.5.1", optional = true } # MIT or Apache-2.0
+argmin-observer-slog = { version = "0.2.0", optional = true } # MIT or Apache-2.0
+crossbeam-channel = { version = "0.5.15", optional = true } # MIT or Apache-2.0
+rkyv = { version = "0.8.12", features = ["hashbrown-0_15"] }
 
 [features]
 default = ["train"]

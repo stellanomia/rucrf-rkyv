@@ -2,13 +2,8 @@ use core::num::NonZeroU32;
 
 use alloc::vec::Vec;
 
-use bincode::{
-    de::Decoder,
-    enc::Encoder,
-    error::{DecodeError, EncodeError},
-    Decode, Encode,
-};
 use hashbrown::HashMap;
+use rkyv::{Archive, Deserialize, Serialize};
 
 use crate::errors::{Result, RucrfError};
 use crate::feature::{self, FeatureProvider};
@@ -22,45 +17,12 @@ pub trait Model {
 }
 
 /// Represents a raw model.
+#[derive(Archive, Serialize, Deserialize)]
 pub struct RawModel {
     weights: Vec<f64>,
     unigram_weight_indices: Vec<Option<NonZeroU32>>,
     bigram_weight_indices: Vec<HashMap<u32, u32>>,
     provider: FeatureProvider,
-}
-
-impl<Context> Decode<Context> for RawModel {
-    fn decode<D: Decoder>(decoder: &mut D) -> Result<Self, DecodeError> {
-        let weights = Decode::decode(decoder)?;
-        let unigram_weight_indices: Vec<Option<NonZeroU32>> = Decode::decode(decoder)?;
-        let bigram_weight_indices: Vec<Vec<(u32, u32)>> = Decode::decode(decoder)?;
-        let provider: FeatureProvider = Decode::decode(decoder)?;
-        Ok(Self {
-            weights,
-            unigram_weight_indices,
-            bigram_weight_indices: bigram_weight_indices
-                .into_iter()
-                .map(|v| v.into_iter().collect())
-                .collect(),
-            provider,
-        })
-    }
-}
-bincode::impl_borrow_decode!(RawModel);
-
-impl Encode for RawModel {
-    fn encode<E: Encoder>(&self, encoder: &mut E) -> Result<(), EncodeError> {
-        let bigram_weight_indices: Vec<Vec<(u32, u32)>> = self
-            .bigram_weight_indices
-            .iter()
-            .map(|v| v.iter().map(|(&k, &v)| (k, v)).collect())
-            .collect();
-        Encode::encode(&self.weights, encoder)?;
-        Encode::encode(&self.unigram_weight_indices, encoder)?;
-        Encode::encode(&bigram_weight_indices, encoder)?;
-        Encode::encode(&self.provider, encoder)?;
-        Ok(())
-    }
 }
 
 impl RawModel {
@@ -234,7 +196,6 @@ impl RawModel {
 }
 
 impl Model for RawModel {
-    #[must_use]
     fn search_best_path(&self, lattice: &Lattice) -> (Vec<Edge>, f64) {
         let mut best_scores = vec![vec![]; lattice.nodes().len()];
         best_scores[lattice.nodes().len() - 1].push((0, 0, None, 0.0));
@@ -306,7 +267,7 @@ impl Model for RawModel {
 }
 
 /// Represents a merged feature set.
-#[derive(Clone, Copy, Debug, Decode, Encode)]
+#[derive(Clone, Copy, Debug, Archive, Serialize, Deserialize)]
 pub struct MergedFeatureSet {
     /// Weight.
     pub weight: f64,
@@ -328,43 +289,7 @@ pub struct MergedModel {
     pub right_conn_to_left_feats: Vec<Vec<Option<NonZeroU32>>>,
 }
 
-impl<Context> Decode<Context> for MergedModel {
-    fn decode<D: Decoder>(decoder: &mut D) -> Result<Self, DecodeError> {
-        let feature_sets = Decode::decode(decoder)?;
-        let matrix: Vec<Vec<(u32, f64)>> = Decode::decode(decoder)?;
-        let left_conn_to_right_feats = Decode::decode(decoder)?;
-        let right_conn_to_left_feats = Decode::decode(decoder)?;
-        Ok(Self {
-            feature_sets,
-            matrix: matrix
-                .into_iter()
-                .map(|x| x.into_iter().collect())
-                .collect(),
-            left_conn_to_right_feats,
-            right_conn_to_left_feats,
-        })
-    }
-}
-bincode::impl_borrow_decode!(MergedModel);
-
-impl Encode for MergedModel {
-    fn encode<E: Encoder>(&self, encoder: &mut E) -> Result<(), EncodeError> {
-        let matrix: Vec<Vec<(u32, f64)>> = self
-            .matrix
-            .clone()
-            .into_iter()
-            .map(|x| x.into_iter().collect())
-            .collect();
-        Encode::encode(&self.feature_sets, encoder)?;
-        Encode::encode(&matrix, encoder)?;
-        Encode::encode(&self.left_conn_to_right_feats, encoder)?;
-        Encode::encode(&self.right_conn_to_left_feats, encoder)?;
-        Ok(())
-    }
-}
-
 impl Model for MergedModel {
-    #[must_use]
     fn search_best_path(&self, lattice: &Lattice) -> (Vec<Edge>, f64) {
         let mut best_scores = vec![vec![]; lattice.nodes().len()];
         best_scores[lattice.nodes().len() - 1].push((0, 0, None, 0.0));

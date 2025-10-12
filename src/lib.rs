@@ -10,7 +10,7 @@
 # fn main() -> Result<(), Box<dyn std::error::Error>> {
 use std::num::NonZeroU32;
 
-use rucrf::{Edge, FeatureProvider, FeatureSet, Lattice, Model, Trainer};
+use rucrf_rkyv::{Edge, FeatureProvider, FeatureSet, Lattice, Model, Trainer};
 
 // Train:
 // 京(kyo) 都(to)
