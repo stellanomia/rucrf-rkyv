@@ -1,6 +1,8 @@
+[workspace]
+
 [package]
 name = "rucrf-rkyv"
-version = "0.3.3-rkyv.1"
+version = "0.3.3-rkyv.2"
 edition = "2024"
 rust-version = "1.90"
 authors = [
