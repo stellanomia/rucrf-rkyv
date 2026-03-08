@@ -16,12 +16,12 @@ keywords = ["crf"]
 categories = ["science", "algorithms"]
 
 [dependencies]
-hashbrown = "0.15.5" # MIT or Apache-2.0
+hashbrown = "0.16.1" # MIT or Apache-2.0
 argmin = { version = "0.11.0", optional = true } # MIT or Apache-2.0
 argmin-math = { version = "0.5.1", optional = true } # MIT or Apache-2.0
 argmin-observer-slog = { version = "0.2.0", optional = true } # MIT or Apache-2.0
 crossbeam-channel = { version = "0.5.15", optional = true } # MIT or Apache-2.0
-rkyv = { version = "0.8.12", features = ["hashbrown-0_15"] }
+rkyv = { version = "0.8.15", features = ["hashbrown-0_16"] }
 
 [features]
 default = ["train"]
