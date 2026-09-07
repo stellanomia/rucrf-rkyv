@@ -2,17 +2,17 @@
 
 [package]
 name = "rucrf-rkyv"
-version = "0.3.3-rkyv.3"
+version = "0.3.3-rkyv.4"
 edition = "2024"
 rust-version = "1.90"
 authors = [
-    "stellanomia <fulmlumo@gmail.com>",
+    "o24s <fulmlumo@gmail.com>",
     "Koichi Akabe <vbkaisetsu@gmail.com>",
 ]
 description = "Conditional Random Fields implemented in pure Rust, with rkyv support"
 license = "MIT OR Apache-2.0"
-homepage = "https://github.com/stellanomia/rucrf-rkyv"
-repository = "https://github.com/stellanomia/rucrf-rkyv"
+homepage = "https://github.com/o24s/rucrf-rkyv"
+repository = "https://github.com/o24s/rucrf-rkyv"
 readme = "README.md"
 keywords = ["crf"]
 categories = ["science", "algorithms"]
@@ -22,8 +22,8 @@ hashbrown = "0.17.1" # MIT or Apache-2.0
 argmin = { version = "0.11.0", optional = true } # MIT or Apache-2.0
 argmin-math = { version = "0.5.1", optional = true } # MIT or Apache-2.0
 argmin-observer-slog = { version = "0.2.0", optional = true } # MIT or Apache-2.0
-crossbeam-channel = { version = "0.5.15", optional = true } # MIT or Apache-2.0
-rkyv = { version = "0.8.16", features = ["hashbrown-0_17"] }
+crossbeam-channel = { version = "0.5.17", optional = true } # MIT or Apache-2.0
+rkyv = { version = "0.8.18", features = ["hashbrown-0_17"] }
 
 [features]
 default = ["train"]
